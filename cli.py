@@ -53,7 +53,7 @@ class CLI:
         # Implemented Commands
         self.commands_implemented = {
             'add': self.add,
-            # 'list': self.list,
+            'list': self.list,
             # 'search': self.search,
             # 'remove': self.remove,
         }
@@ -103,6 +103,35 @@ class CLI:
             return( False, str(e) )
         # Successful
         return( True, 'note stored at "{}"'.format( fp_write ) )
+    # List
+    def list( self, arguments ):
+        # Get Datetime
+        datetime_now = datetime.datetime.now()
+        datetime_str = datetime_to_str(datetime_now)
+        # List
+        try:
+            file_names = [
+                x for x in sorted( os.listdir( self.path_data ) )[::-1] if x.endswith('.json') and len(x) == 36
+            ]
+            file_paths = [
+                os.path.join( self.path_data, fn ) for fn in file_names
+            ]
+        except Exception as e:
+            return( False, str(e) )
+        # Report
+        print( 'Total notes found: {:>9}'.format( len(file_names) ) )
+        if( len(file_names) > 0 ):
+            print('\n{:<14} | {:<16} | {}'.format( 'Note Taken At', 'Text Identifier', 'Note Path' ))
+            print('-'*( 14+3+16+3+len(self.path_data)+1+36 ))
+        for fn, fp in zip( file_names[:10], file_paths ):
+            _datetime, _sha1 = fn[:-5].split('_')
+            print('{} | {} | {}'.format( _datetime, _sha1, fp ))
+        if( len(file_names) > 10 ):
+            print('...')
+        if( len(file_names) > 0 ):
+            print('-'*( 14+3+16+3+len(self.path_data)+1+36 ))
+        # Successful
+        return( True, 'notes at "{}" listed'.format( self.path_data ) )
         
 
 
@@ -119,7 +148,7 @@ if __name__ == '__main__':
         print( "Arg {:>2} : '{}'".format( i, v ) )
     print('-#'*20)
     # Report
-    if( len(argv) >= 3 ):
+    if( len(argv) >= 2 ):
         successful = cli.execute( argv )
     
     
