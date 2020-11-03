@@ -1,3 +1,4 @@
 {
-  "path_data": "../../data"
+  "path_data": "../../data",
+  "max_list_results": 10
 }

@@ -50,6 +50,7 @@ class CLI:
         self.configs = jload( self.path_configs )
         ## Specific Parameters
         self.path_data = self.configs['path_data']
+        self.max_list_results = self.configs['max_list_results']
         # Implemented Commands
         self.commands_implemented = {
             'add': self.add,
@@ -67,8 +68,9 @@ class CLI:
         # Execute
         successful, message = self.commands_implemented[command](arguments)
         # Report
-        print( '{:<10} : {}'.format(
+        print( '{:<10} <{}> : {}'.format(
             'SUCCESSFUL' if successful else 'FAILED',
+            command.upper(),
             message
         ) )
         # Return
@@ -123,10 +125,10 @@ class CLI:
         if( len(file_names) > 0 ):
             print('\n{:<14} | {:<16} | {}'.format( 'Note Taken At', 'Text Identifier', 'Note Path' ))
             print('-'*( 14+3+16+3+len(self.path_data)+1+36 ))
-        for fn, fp in zip( file_names[:10], file_paths ):
+        for fn, fp in zip( file_names[:self.max_list_results], file_paths ):
             _datetime, _sha1 = fn[:-5].split('_')
             print('{} | {} | {}'.format( _datetime, _sha1, fp ))
-        if( len(file_names) > 10 ):
+        if( len(file_names) > self.max_list_results ):
             print('...')
         if( len(file_names) > 0 ):
             print('-'*( 14+3+16+3+len(self.path_data)+1+36 ))
@@ -142,11 +144,6 @@ if __name__ == '__main__':
     argv = sys.argv
     # Create CLI
     cli = CLI( 'configs.json' )
-    # Report
-    print( len(argv) )
-    for i, v in enumerate( argv ):
-        print( "Arg {:>2} : '{}'".format( i, v ) )
-    print('-#'*20)
     # Report
     if( len(argv) >= 2 ):
         successful = cli.execute( argv )
