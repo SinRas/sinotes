@@ -40,7 +40,12 @@ class CLI:
     - path_data
     
     TODO:
-    - add following commands: 'add', 'list', 'search', 'remove'
+    - add 'indexer' to index contentp
+        - list of people
+        - list of hashtags
+        - list of words?
+        - date, time, datetime, "yesterday", "last_week", ...
+    - add following commands: 'search', 'remove'
     - add @2 and @4 as aliases for "to" and "from" a person
     """
     # Constructor
@@ -123,15 +128,16 @@ class CLI:
         # Report
         print( 'Total notes found: {:>9}'.format( len(file_names) ) )
         if( len(file_names) > 0 ):
-            print('\n{:<14} | {:<16} | {}'.format( 'Note Taken At', 'Text Identifier', 'Note Path' ))
-            print('-'*( 14+3+16+3+len(self.path_data)+1+36 ))
+            print('\n{:<14} | {:<16} | {} | {}'.format( 'Note Taken At', 'Text Identifier', 'Note Path', 'Text Head' ))
+            print('-'*( 14+3+16+3+len(self.path_data)+1+36+3+75 ))
         for fn, fp in zip( file_names[:self.max_list_results], file_paths ):
             _datetime, _sha1 = fn[:-5].split('_')
-            print('{} | {} | {}'.format( _datetime, _sha1, fp ))
+            head = jload(fp)['text'][:75]
+            print('{} | {} | {} | {}'.format( _datetime, _sha1, fp, head ))
         if( len(file_names) > self.max_list_results ):
             print('...')
         if( len(file_names) > 0 ):
-            print('-'*( 14+3+16+3+len(self.path_data)+1+36 ))
+            print('-'*( 14+3+16+3+len(self.path_data)+1+36+3+75 ))
         # Successful
         return( True, 'notes at "{}" listed'.format( self.path_data ) )
         
