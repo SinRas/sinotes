@@ -132,7 +132,7 @@ class CLI:
             print('-'*( 14+3+16+3+len(self.path_data)+1+36+3+75 ))
         for fn, fp in zip( file_names[:self.max_list_results], file_paths ):
             _datetime, _sha1 = fn[:-5].split('_')
-            head = jload(fp)['text'][:75]
+            head = jload(fp)['text'][:75].replace('\n', ' ')
             print('{} | {} | {} | {}'.format( _datetime, _sha1, fp, head ))
         if( len(file_names) > self.max_list_results ):
             print('...')
